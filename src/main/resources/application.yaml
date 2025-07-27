@@ -1,0 +1,47 @@
+riot:
+  api:
+    key: RGAPI-c3cc3a17-5017-4eae-9519-535676762ac7
+    timeout:
+      connect: 10
+      read: 30
+      write: 30
+    rate-limit:
+      requests-per-minute: 90
+      burst-capacity: 10
+    default-region: americas
+
+spring:
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=300s
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,ratelimiters
+  metrics:
+    export:
+      simple:
+        enabled: true
+
+logging:
+  level:
+    com.yourgg: DEBUG
+    okhttp3: DEBUG
+    io.github.resilience4j: DEBUG
+
+# Resilience4j Rate Limiter 설정
+resilience4j:
+  ratelimiter:
+    instances:
+      riotApiLimiter:
+        limitForPeriod: 100 # 2분 동안
+        limitRefreshPeriod: 120s # 120초
+        timeoutDuration: 2s

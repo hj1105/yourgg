@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>매치 상세 정보</title>
+    <style>
+        body { font-family: sans-serif; }
+        .team-blue { border: 2px solid #1e88e5; margin-bottom: 20px; padding: 10px; border-radius: 5px; }
+        .team-red { border: 2px solid #e53935; margin-bottom: 20px; padding: 10px; border-radius: 5px; }
+        .win { font-weight: bold; color: blue; }
+        .lose { color: red; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px;}
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+<h1>매치 상세 결과</h1>
+<div th:object="${match}">
+    <p>게임 모드: <span th:text="*{gameMode}"></span></p>
+    <p>게임 시간: <span th:text="*{gameDuration / 60} + '분 ' + *{gameDuration % 60} + '초'"></span></p>
+
+    <div th:each="team : *{teams}" th:class="${team.teamId == 100 ? 'team-blue' : 'team-red'}">
+        <h2 th:text="${team.teamId == 100 ? '블루팀' : '레드팀'}"></h2>
+        <span th:if="${team.win}" class="win">(승리)</span>
+        <span th:unless="${team.win}" class="lose">(패배)</span>
+
+        <table>
+            <thead>
+            <tr>
+                <th>소환사</th>
+                <th>챔피언</th>
+                <th>K/D/A</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${team.participants}">
+                <td th:text="${p.riotIdGameName}"></td>
+                <td th:text="${p.championName}"></td>
+                <td th:text="${p.kills} + ' / ' + ${p.deaths} + ' / ' + ${p.assists}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
